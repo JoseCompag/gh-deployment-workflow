@@ -35,9 +35,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      # Paso 2: Configurar GitHub Pages
+      # Paso 2: Configurar GitHub Pages (con enablement en true)
       - name: Setup Pages
         uses: actions/configure-pages@v4
+        with:
+          enablement: true  # Habilita GitHub Pages automáticamente
       
       # Paso 3: Subir los archivos
       - name: Upload artifact
