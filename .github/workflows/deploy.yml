@@ -1,0 +1,51 @@
+name: Deploy to GitHub Pages
+
+# ¿Cuándo se ejecuta este workflow?
+on:
+  push:
+    branches:
+      - main  # Solo cuando hay push a la rama main
+    paths:
+      - 'index.html'  # Y solo si se modificó index.html
+
+# Permisos necesarios para desplegar a GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita que se ejecuten múltiples despliegues al mismo tiempo
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+# Las tareas que se van a ejecutar
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest  # Sistema operativo donde se ejecuta
+    
+    # Configuración del entorno
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      # Paso 1: Descargar el código del repositorio
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Paso 2: Configurar GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      # Paso 3: Subir los archivos
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'  # Sube todo el contenido del repositorio
+      
+      # Paso 4: Desplegar a GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
